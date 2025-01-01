@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using System.Collections;
 
 public class ScreenManager : MonoBehaviour
 {
@@ -93,7 +94,10 @@ public class ScreenManager : MonoBehaviour
 
             // PNG 데이터를 파일로 저장
             File.WriteAllBytes(filePath, pngData);
-
+            
+            // 저장 알림 메시지 띄우기
+            StartCoroutine(PopupAlertMessage());
+            
             // 저장 완료 로그
             Debug.Log($"그림이 저장되었습니다: {filePath}");
         }
@@ -125,5 +129,12 @@ public class ScreenManager : MonoBehaviour
         {
             Debug.LogWarning($"저장된 그림이 없습니다: {filePath}");
         }
+    }
+
+    private IEnumerator PopupAlertMessage()
+    {
+        UIManager.Instance.UIList[4].gameObject.SetActive(true);
+        yield return new WaitForSecondsRealtime(2f); // Time.timeScale과 상관없이 2초 대기
+        UIManager.Instance.UIList[4].gameObject.SetActive(false);
     }
 }

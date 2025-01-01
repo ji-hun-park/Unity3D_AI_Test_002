@@ -11,7 +11,7 @@ public class ChatUI : MonoBehaviour
 
     private void Start()
     {
-        chatText.text = "제대로 안그리면 죽여버리겠다!\r\n\r\n키워드 : "+GameManager.Instance.keyWord;
+        chatText.text = "제대로 안그리면 죽여버리겠습니다!\r\n\r\n키워드 : "+GameManager.Instance.keyWord;
     }
 
     private void Update()

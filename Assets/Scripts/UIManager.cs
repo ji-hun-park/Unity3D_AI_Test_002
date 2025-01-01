@@ -35,6 +35,7 @@ public class UIManager : MonoBehaviour
             FindInteractUI();
             FindScreenUI();
             FindCanvasUI();
+            FindPopupUI();
             FindOverUI();
         }
     }
@@ -57,6 +58,11 @@ public class UIManager : MonoBehaviour
     private void FindCanvasUI()
     {
         FindUI("CanvasUI");
+    }
+
+    private void FindPopupUI()
+    {
+        FindUI("PopupUI");
     }
     
     private void FindOverUI()
