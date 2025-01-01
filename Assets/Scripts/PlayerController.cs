@@ -15,16 +15,22 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (Input.GetKey(GameManager.Instance.interactKey))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Screen"))
         {
-            UIManager.Instance.UIList[1].gameObject.SetActive(false);
-            InteractWithScreen(other.gameObject);
+            if (Input.GetKey(GameManager.Instance.interactKey))
+            {
+                UIManager.Instance.UIList[1].gameObject.SetActive(false);
+                InteractWithScreen(other.gameObject);
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        UIManager.Instance.UIList[1].gameObject.SetActive(false);
+        if (other.gameObject.layer == LayerMask.NameToLayer("Screen"))
+        {
+            UIManager.Instance.UIList[1].gameObject.SetActive(false);
+        }
     }
 
     private void OnCollisionEnter(Collision other)
@@ -37,23 +43,30 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionStay(Collision other)
     {
-        if (Input.GetKey(GameManager.Instance.interactKey))
+        if (other.gameObject.CompareTag("NPC"))
         {
-            CameraManager.Instance.ActivateSubCamera();
-            Time.timeScale = 0;
-            UIManager.Instance.UIList[1].gameObject.SetActive(false);
-            UIManager.Instance.UIList[0].gameObject.SetActive(true);
+            if (Input.GetKey(GameManager.Instance.interactKey) && !UIManager.Instance.UIList[0].gameObject.activeSelf)
+            {
+                CameraManager.Instance.ActivateSubCamera();
+                Time.timeScale = 0;
+                UIManager.Instance.UIList[1].gameObject.SetActive(false);
+                UIManager.Instance.UIList[0].gameObject.SetActive(true);
+            }
         }
     }
 
     private void OnCollisionExit(Collision other)
     {
-        UIManager.Instance.UIList[1].gameObject.SetActive(false);
+        if (other.gameObject.CompareTag("NPC"))
+        {
+            UIManager.Instance.UIList[1].gameObject.SetActive(false);
+        }
     }
 
     private void InteractWithScreen(GameObject screen)
     {
         // 상호작용 로직
+        Time.timeScale = 0;
         UIManager.Instance.UIList[2].gameObject.SetActive(true);
         Debug.Log($"Interacting with {screen.name}");
     }

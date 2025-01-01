@@ -17,6 +17,7 @@ namespace Supercyan.AnimalPeopleSample
             Direct
         }
 
+        [SerializeField] private Transform camera;
         [SerializeField] private float m_moveSpeed = 2;
         [SerializeField] private float m_turnSpeed = 200;
         [SerializeField] private float m_jumpForce = 4;
@@ -170,7 +171,7 @@ namespace Supercyan.AnimalPeopleSample
             float v = Input.GetAxis("Vertical");
             float h = Input.GetAxis("Horizontal");
 
-            Transform camera = Camera.main.transform;
+            //Transform camera = Camera.main.transform;
 
             if (Input.GetKey(KeyCode.LeftShift))
             {
