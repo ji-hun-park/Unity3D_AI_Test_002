@@ -48,6 +48,11 @@ public class ScreenUI : MonoBehaviour
         }
     }
 
+    public void OnClickCanvasButton()
+    {
+        UIManager.Instance.UIList[3].gameObject.SetActive(true);
+    }
+
     public void OnClickSkipButton()
     {
         Time.timeScale = 1;
