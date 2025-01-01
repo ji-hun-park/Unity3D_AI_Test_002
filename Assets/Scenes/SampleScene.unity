@@ -246,6 +246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20776256680cbe744bf9f6eac8ba8b2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  screenImage: {fileID: 387698469}
+  spriteAddress: CanvasH
 --- !u!1 &235376115
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,6 +1033,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75f7f89466ee8e441afd6d6290f428d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  promptMessage: 
+  apiResponse: 
+  messageList: []
+  isCatch: 0
 --- !u!1 &895037562
 GameObject:
   m_ObjectHideFlags: 0
@@ -1089,6 +1095,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 907068512}
+  - component: {fileID: 907068513}
   m_Layer: 5
   m_Name: OverUI
   m_TagString: Untagged
@@ -1115,6 +1122,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &907068513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 907068511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3748fb6435ab854cb5916869f77caa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1257,7 +1276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.83137256}
+  m_Color: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1436,6 +1455,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f9626f63c07be744a4d8fbb5a743748, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 0}
+  UIList: []
 --- !u!1 &1281549618
 GameObject:
   m_ObjectHideFlags: 0

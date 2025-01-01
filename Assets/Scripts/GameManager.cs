@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
+using UnityEngine.AddressableAssets;
 
 public class GameManager : MonoBehaviour
 {
@@ -80,6 +81,12 @@ public class GameManager : MonoBehaviour
         
         KeyWordListSetting();
         InitKeyWord();
+        
+        // AddressAbles 초기화
+        Addressables.InitializeAsync().Completed += (operation) =>
+        {
+            Debug.Log("Addressables Initialized");
+        };
     }
 
     private void HandleFlagTrue()
