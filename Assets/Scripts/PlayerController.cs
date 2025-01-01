@@ -39,6 +39,8 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(GameManager.Instance.interactKey))
         {
+            CameraManager.Instance.ActivateSubCamera();
+            Time.timeScale = 0;
             UIManager.Instance.UIList[1].gameObject.SetActive(false);
             UIManager.Instance.UIList[0].gameObject.SetActive(true);
         }
