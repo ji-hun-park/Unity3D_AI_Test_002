@@ -270,7 +270,10 @@ public class ScreenManager : MonoBehaviour
         {
             for (int y = 0; y < textureHeight; y++)
             {
-                if (Vector2.Distance(new Vector2(x, y), center) <= radius)
+                float distance = Vector2.Distance(new Vector2(x, y), center);
+            
+                // 반지름에 가까운 거리만 픽셀 설정
+                if (Mathf.Abs(distance - radius) <= brushSize) // 원 둘레 두께
                 {
                     drawTexture.SetPixel(x, y, drawColor);
                 }
@@ -278,6 +281,7 @@ public class ScreenManager : MonoBehaviour
         }
         drawTexture.Apply();
     }
+
 
     void SetDrawMode(DrawMode mode)
     {
