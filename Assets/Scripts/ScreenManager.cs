@@ -230,18 +230,35 @@ public class ScreenManager : MonoBehaviour
 
     void DrawRectangle(Vector2 start, Vector2 end)
     {
-        for (int x = (int)start.x; x <= (int)end.x; x++)
+        int xMin = Mathf.RoundToInt(Mathf.Min(start.x, end.x));
+        int xMax = Mathf.RoundToInt(Mathf.Max(start.x, end.x));
+        int yMin = Mathf.RoundToInt(Mathf.Min(start.y, end.y));
+        int yMax = Mathf.RoundToInt(Mathf.Max(start.y, end.y));
+
+        // 사각형의 네 변 그리기
+        for (int x = xMin; x <= xMax; x++)
         {
-            drawTexture.SetPixel(x, (int)start.y, drawColor);
-            drawTexture.SetPixel(x, (int)end.y, drawColor);
+            // 상단 변
+            if (yMin >= 0 && yMin < textureHeight)
+                drawTexture.SetPixel(x, yMin, drawColor);
+
+            // 하단 변
+            if (yMax >= 0 && yMax < textureHeight)
+                drawTexture.SetPixel(x, yMax, drawColor);
         }
 
-        for (int y = (int)start.y; y <= (int)end.y; y++)
+        for (int y = yMin; y <= yMax; y++)
         {
-            drawTexture.SetPixel((int)start.x, y, drawColor);
-            drawTexture.SetPixel((int)end.x, y, drawColor);
+            // 왼쪽 변
+            if (xMin >= 0 && xMin < textureWidth)
+                drawTexture.SetPixel(xMin, y, drawColor);
+
+            // 오른쪽 변
+            if (xMax >= 0 && xMax < textureWidth)
+                drawTexture.SetPixel(xMax, y, drawColor);
         }
-        drawTexture.Apply();
+
+        drawTexture.Apply(); // 변경 사항 적용
     }
 
     void DrawCircle(Vector2 start, Vector2 end)
