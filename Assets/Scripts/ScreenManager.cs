@@ -38,50 +38,47 @@ public class ScreenManager : MonoBehaviour
 
     void Update()
     {
-        // 마우스 입력 감지
-        if (Input.GetMouseButton(0)) // 좌클릭
+        if (Input.GetMouseButtonDown(0))
         {
             Vector2 localPoint;
-            // UI 좌표로 변환
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint))
             {
-                // UI Image 좌표를 텍스처 좌표로 변환
                 float x = (localPoint.x + rectTransform.rect.width / 2) / rectTransform.rect.width * textureWidth;
                 float y = (localPoint.y + rectTransform.rect.height / 2) / rectTransform.rect.height * textureHeight;
                 startPoint = new Vector2(x, y);
                 isDrawing = true;
-                
+
                 if (currentMode == DrawMode.Brush)
                 {
                     DrawBrush((int)x, (int)y);
                 }
             }
-            else if (Input.GetMouseButton(0) && isDrawing && currentMode == DrawMode.Brush)
+        }
+        else if (Input.GetMouseButton(0) && isDrawing && currentMode == DrawMode.Brush)
+        {
+            Vector2 localPoint;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint))
             {
-                //Vector2 localPoint;
-                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint))
-                {
-                    float x = (localPoint.x + rectTransform.rect.width / 2) / rectTransform.rect.width * textureWidth;
-                    float y = (localPoint.y + rectTransform.rect.height / 2) / rectTransform.rect.height * textureHeight;
-                    DrawBrush((int)x, (int)y);
-                }
+                float x = (localPoint.x + rectTransform.rect.width / 2) / rectTransform.rect.width * textureWidth;
+                float y = (localPoint.y + rectTransform.rect.height / 2) / rectTransform.rect.height * textureHeight;
+                DrawBrush((int)x, (int)y);
             }
-            else if (Input.GetMouseButtonUp(0) && isDrawing)
+        }
+        else if (Input.GetMouseButtonUp(0) && isDrawing)
+        {
+            Vector2 localPoint;
+            if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint))
             {
-                //Vector2 localPoint;
-                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint))
-                {
-                    float x = (localPoint.x + rectTransform.rect.width / 2) / rectTransform.rect.width * textureWidth;
-                    float y = (localPoint.y + rectTransform.rect.height / 2) / rectTransform.rect.height * textureHeight;
+                float x = (localPoint.x + rectTransform.rect.width / 2) / rectTransform.rect.width * textureWidth;
+                float y = (localPoint.y + rectTransform.rect.height / 2) / rectTransform.rect.height * textureHeight;
 
-                    Vector2 endPoint = new Vector2(x, y);
+                Vector2 endPoint = new Vector2(x, y);
 
-                    if (currentMode == DrawMode.Line) DrawLine(startPoint, endPoint);
-                    else if (currentMode == DrawMode.Rectangle) DrawRectangle(startPoint, endPoint);
-                    else if (currentMode == DrawMode.Circle) DrawCircle(startPoint, endPoint);
+                if (currentMode == DrawMode.Line) DrawLine(startPoint, endPoint);
+                else if (currentMode == DrawMode.Rectangle) DrawRectangle(startPoint, endPoint);
+                else if (currentMode == DrawMode.Circle) DrawCircle(startPoint, endPoint);
 
-                    isDrawing = false;
-                }
+                isDrawing = false;
             }
         }
 
@@ -95,6 +92,18 @@ public class ScreenManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.L))
         {
             LoadTexture();
+        }
+        
+        // 전송 단축키 감지
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            OnClickSendButton();
+        }
+        
+        // 뒤로가기 단축키 감지
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            OnClickReturnButton();
         }
     }
 

@@ -38,7 +38,7 @@ public class ChatUI : MonoBehaviour
 
     public void InitKeyWord()
     {
-        originalText = "제대로 안그리면 죽여버리겠습니다!\r\n캔버스에 그림 그리고 저장 후 전송하세요!\r\n단축키 : 저장(S), 불러오기(L)\r\n\r\n키워드 : "+GameManager.Instance.keyWord;
+        originalText = "제대로 안그리면 죽여버리겠습니다!\r\n캔버스에 그림 그리고 저장 후 전송하세요!\r\n단축키 : 뒤로가기(ESC), 저장(S), 불러오기(L), 전송(T)\r\n\r\n키워드 : "+GameManager.Instance.keyWord;
         KeyWordChange(originalText);
     }
 
