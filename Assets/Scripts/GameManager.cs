@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     
     [Header("GameSettings")]
     public Transform player;
-
+    public Vector3 NPCInit;
     public GameObject NPC;
     public Animator animator;
     public KeyCode interactKey;
@@ -80,6 +80,7 @@ public class GameManager : MonoBehaviour
         
         player = GameObject.FindGameObjectWithTag("Player").transform;
         NPC = GameObject.FindGameObjectWithTag("NPC");
+        NPCInit = NPC.transform.position;
         
         if (NPC != null) animator = NPC.GetComponent<Animator>();
         
@@ -132,7 +133,8 @@ public class GameManager : MonoBehaviour
     {
         animator.updateMode = AnimatorUpdateMode.UnscaledTime;
         animator.SetTrigger("Melee Set");
-        yield return new WaitForSecondsRealtime(3f);
+        yield return new WaitForSecondsRealtime(5f);
+        NPC.transform.position = NPCInit;
         animator.ResetTrigger("Melee Set");
         animator.Play("Idle"); // Idle 상태로 전환
     }

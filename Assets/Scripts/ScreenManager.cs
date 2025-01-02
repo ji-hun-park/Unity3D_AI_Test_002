@@ -164,6 +164,11 @@ public class ScreenManager : MonoBehaviour
     {
         LoadTexture();
     }
+    
+    public void OnClickSaveButton()
+    {
+        SaveTexture();
+    }
 
     public void OnClickReturnButton()
     {

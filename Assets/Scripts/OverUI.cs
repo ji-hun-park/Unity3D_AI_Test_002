@@ -16,6 +16,7 @@ public class OverUI : MonoBehaviour
         GameManager.Instance.clearFlag = false;
         GameManager.Instance.failFlag = false;
         GameManager.Instance.InitKeyWord();
+        GameManager.Instance.NPC.transform.position = GameManager.Instance.NPCInit;
         UIManager.Instance.UIList[0].GetComponent<ChatUI>().InitKeyWord();
         UIManager.Instance.UIList[0].GetComponent<ChatUI>().isCorrect = false;
         UIManager.Instance.UIList[0].GetComponent<ChatUI>().isIncorrect = false;
