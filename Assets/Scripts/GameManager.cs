@@ -133,7 +133,7 @@ public class GameManager : MonoBehaviour
     {
         animator.updateMode = AnimatorUpdateMode.UnscaledTime;
         animator.SetTrigger("Melee Set");
-        yield return new WaitForSecondsRealtime(5f);
+        yield return new WaitForSecondsRealtime(10f);
         NPC.transform.position = NPCInit;
         animator.ResetTrigger("Melee Set");
         animator.Play("Idle"); // Idle 상태로 전환

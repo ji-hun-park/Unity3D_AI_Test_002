@@ -6,11 +6,18 @@ using System.Collections;
 public class ScreenManager : MonoBehaviour
 {
     public RawImage targetImage; // 그림을 그릴 UI Image (RawImage 사용 권장)
-    public int textureWidth = 512;
-    public int textureHeight = 512;
+    public int textureWidth = 512; // 캔버스 너비
+    public int textureHeight = 512; // 캔버스 높이
     public Color drawColor = Color.black; // 브러쉬 색상
     public float brushSize = 5f; // 브러시 크기
-
+    
+    public Button blackButton;  // UI 버튼 (검정색)
+    public Button whiteButton;  // UI 버튼 (하얀색)
+    public Button redButton;    // UI 버튼 (빨간색)
+    public Button blueButton;   // UI 버튼 (파란색)
+    public Button greenButton;  // UI 버튼 (녹색)
+    public Slider brushSizeSlider; // 브러시 크기 조절 슬라이더
+    
     private Texture2D drawTexture;
     private RectTransform rectTransform;
 
@@ -68,6 +75,22 @@ public class ScreenManager : MonoBehaviour
         // 텍스처를 RawImage에 연결
         targetImage.texture = drawTexture;
         rectTransform = targetImage.GetComponent<RectTransform>();
+        
+        // 버튼 이벤트 연결
+        if (blackButton != null) blackButton.onClick.AddListener(() => ChangeColor(Color.black));
+        if (whiteButton != null) whiteButton.onClick.AddListener(() => ChangeColor(Color.white));
+        if (redButton != null) redButton.onClick.AddListener(() => ChangeColor(Color.red));
+        if (blueButton != null) blueButton.onClick.AddListener(() => ChangeColor(Color.blue));
+        if (greenButton != null) greenButton.onClick.AddListener(() => ChangeColor(Color.green));
+
+        // 슬라이더 이벤트 연결
+        if (brushSizeSlider != null)
+        {
+            brushSizeSlider.minValue = 1f;
+            brushSizeSlider.maxValue = 20f;
+            brushSizeSlider.value = brushSize;
+            brushSizeSlider.onValueChanged.AddListener(ChangeBrushSize);
+        }
     }
     
     void DrawAt(int x, int y)
@@ -158,6 +181,18 @@ public class ScreenManager : MonoBehaviour
             Debug.LogWarning("저장된 그림이 없습니다!");
             UIManager.Instance.RunPopupCoroutine("저장된 그림이 없습니다!");
         }
+    }
+    
+    void ChangeColor(Color newColor)
+    {
+        drawColor = newColor;
+        Debug.Log($"브러쉬 색상이 변경되었습니다: {newColor}");
+    }
+
+    void ChangeBrushSize(float newSize)
+    {
+        brushSize = newSize;
+        Debug.Log($"브러쉬 크기가 변경되었습니다: {newSize}");
     }
 
     public void OnClickLoadButton()
