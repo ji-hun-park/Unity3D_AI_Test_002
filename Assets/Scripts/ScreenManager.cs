@@ -235,32 +235,72 @@ public class ScreenManager : MonoBehaviour
         int yMin = Mathf.RoundToInt(Mathf.Min(start.y, end.y));
         int yMax = Mathf.RoundToInt(Mathf.Max(start.y, end.y));
 
-        // 사각형의 네 변 그리기
-        for (int x = xMin; x <= xMax; x++)
-        {
-            // 상단 변
-            if (yMin >= 0 && yMin < textureHeight)
-                drawTexture.SetPixel(x, yMin, drawColor);
-
-            // 하단 변
-            if (yMax >= 0 && yMax < textureHeight)
-                drawTexture.SetPixel(x, yMax, drawColor);
-        }
-
-        for (int y = yMin; y <= yMax; y++)
-        {
-            // 왼쪽 변
-            if (xMin >= 0 && xMin < textureWidth)
-                drawTexture.SetPixel(xMin, y, drawColor);
-
-            // 오른쪽 변
-            if (xMax >= 0 && xMax < textureWidth)
-                drawTexture.SetPixel(xMax, y, drawColor);
-        }
-
-        drawTexture.Apply(); // 변경 사항 적용
+        // 두께를 적용한 선 그리기
+        DrawThickLine(new Vector2(xMin, yMin), new Vector2(xMax, yMin), drawColor, brushSize); // 상단 변
+        DrawThickLine(new Vector2(xMax, yMin), new Vector2(xMax, yMax), drawColor, brushSize); // 오른쪽 변
+        DrawThickLine(new Vector2(xMax, yMax), new Vector2(xMin, yMax), drawColor, brushSize); // 하단 변
+        DrawThickLine(new Vector2(xMin, yMax), new Vector2(xMin, yMin), drawColor, brushSize); // 왼쪽 변
     }
 
+    // 두께를 적용한 선 그리기
+    void DrawThickLine(Vector2 start, Vector2 end, Color color, float thickness)
+    {
+        int x0 = Mathf.RoundToInt(start.x);
+        int y0 = Mathf.RoundToInt(start.y);
+        int x1 = Mathf.RoundToInt(end.x);
+        int y1 = Mathf.RoundToInt(end.y);
+
+        int dx = Mathf.Abs(x1 - x0);
+        int dy = Mathf.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+
+        while (true)
+        {
+            DrawThickPixel(x0, y0, color, thickness); // 두께를 적용한 픽셀 그리기
+
+            if (x0 == x1 && y0 == y1) break;
+
+            int e2 = err * 2;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+        drawTexture.Apply();
+    }
+
+    // 두께 적용된 픽셀 그리기
+    void DrawThickPixel(int x, int y, Color color, float thickness)
+    {
+        int radius = Mathf.CeilToInt(thickness / 2);
+        for (int offsetX = -radius; offsetX <= radius; offsetX++)
+        {
+            for (int offsetY = -radius; offsetY <= radius; offsetY++)
+            {
+                // 두께를 원형으로 처리
+                if (Vector2.Distance(Vector2.zero, new Vector2(offsetX, offsetY)) <= radius)
+                {
+                    int px = x + offsetX;
+                    int py = y + offsetY;
+
+                    // 텍스처 범위 확인
+                    if (px >= 0 && px < textureWidth && py >= 0 && py < textureHeight)
+                    {
+                        drawTexture.SetPixel(px, py, color);
+                    }
+                }
+            }
+        }
+    }
+    
     void DrawCircle(Vector2 start, Vector2 end)
     {
         float radius = Vector2.Distance(start, end) / 2;
