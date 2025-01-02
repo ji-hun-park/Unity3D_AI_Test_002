@@ -207,9 +207,10 @@ public class ScreenManager : MonoBehaviour
         int sy = y0 < y1 ? 1 : -1;
         int err = dx - dy;
 
+        // 선을 따라가며 픽셀 그리기
         while (true)
         {
-            drawTexture.SetPixel(x0, y0, drawColor);
+            DrawThickPixel(x0, y0, drawColor, brushSize); // 두께 적용
 
             if (x0 == x1 && y0 == y1) break;
 
@@ -225,6 +226,7 @@ public class ScreenManager : MonoBehaviour
                 y0 += sy;
             }
         }
+
         drawTexture.Apply();
     }
 
