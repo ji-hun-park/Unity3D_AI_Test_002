@@ -19,20 +19,25 @@ public class ScreenManager : MonoBehaviour
     public Button redButton;    // UI 버튼 (빨간색)
     public Button blueButton;   // UI 버튼 (파란색)
     public Button greenButton;  // UI 버튼 (녹색)
+    public Button brownButton;  // UI 버튼 (갈색)
+    public Button orangeButton; // UI 버튼 (주황색)
+    public Button yellowButton; // UI 버튼 (노란색)
+    public Button skyblueButton;// UI 버튼 (하늘색)
+    public Button purpleButton; // UI 버튼 (보라색)
     public Slider brushSizeSlider; // 브러시 크기 조절 슬라이더
-    public Button brushButton;
-    public Button lineButton;
-    public Button rectButton;
-    public Button circleButton;
-    public Button BrushButton;
-    public Button pencilButton;
-    public Button penButton;
-    public Button crayonButton;
+    public Button brushButton; // 기본 브러쉬
+    public Button lineButton;  // 직선 그리기
+    public Button rectButton;  // 사각형 그리기
+    public Button circleButton;// 원형 그리기
+    public Button BrushButton; // 기본 브러쉬
+    public Button pencilButton;// 연필 질감
+    public Button penButton;   // 만년필 질감
+    public Button crayonButton;// 크레파스 질감
     
     private Texture2D drawTexture;  // 기본 질감
-    private Texture2D pencilTexture; // 연필 질감
+    private Texture2D pencilTexture;// 연필 질감
     private Texture2D penTexture;   // 만년필 질감
-    private Texture2D crayonTexture; // 크레파스 질감
+    private Texture2D crayonTexture;// 크레파스 질감
     private Texture2D tmpT2D;
     private Sprite iconSprite;
     private RectTransform rectTransform;
@@ -117,6 +122,11 @@ public class ScreenManager : MonoBehaviour
             OnClickReturnButton();
         }
     }
+    
+    public static Color ConvertToUnityColor(int r, int g, int b, int a = 255)
+    {
+        return new Color(r / 255f, g / 255f, b / 255f, a / 255f);
+    }
 
     public void InitCanvas()
     {
@@ -144,6 +154,11 @@ public class ScreenManager : MonoBehaviour
         if (redButton != null) redButton.onClick.AddListener(() => ChangeColor(Color.red));
         if (blueButton != null) blueButton.onClick.AddListener(() => ChangeColor(Color.blue));
         if (greenButton != null) greenButton.onClick.AddListener(() => ChangeColor(Color.green));
+        if (brownButton != null) brownButton.onClick.AddListener(() => ChangeColor(ConvertToUnityColor(89,51,29)));
+        if (yellowButton != null) yellowButton.onClick.AddListener(() => ChangeColor(Color.yellow));
+        if (orangeButton != null) orangeButton.onClick.AddListener(() => ChangeColor(ConvertToUnityColor(255,102,0)));
+        if (skyblueButton != null) skyblueButton.onClick.AddListener(() => ChangeColor(ConvertToUnityColor(135,206,235)));
+        if (purpleButton != null) purpleButton.onClick.AddListener(() => ChangeColor(ConvertToUnityColor(128,0,128)));
         if (brushButton != null) brushButton.onClick.AddListener(() => SetDrawMode(DrawMode.Brush));
         if (lineButton != null) lineButton.onClick.AddListener(() => SetDrawMode(DrawMode.Line));
         if (rectButton != null) rectButton.onClick.AddListener(() => SetDrawMode(DrawMode.Rectangle));
