@@ -11,12 +11,14 @@ public class ChatUI : MonoBehaviour
     public UnityEvent onSkipKeyPressed;
     public string colorHex = ColorUtility.ToHtmlStringRGB(Color.red);
     private string originalText;
-    private bool isCorrect = false;
+    public bool isCorrect = false;
+    public bool isIncorrect = false;
+    public bool OneShot = true;
     
     private void Start()
     {
-        originalText = "제대로 안그리면 죽여버리겠습니다!\r\n\r\n키워드 : "+GameManager.Instance.keyWord;
-        KeyWordChange(originalText);
+        OneShot = true;
+        InitKeyWord();
     }
 
     private void Update()
@@ -26,11 +28,18 @@ public class ChatUI : MonoBehaviour
             onSkipKeyPressed?.Invoke();
         }
 
-        if (LLMAPIManager.Instance.isCatch)
+        if (LLMAPIManager.Instance.isCatch && LLMAPIManager.Instance.apiResponse != "" && OneShot)
         {
             CheckAnswer();
             AnswerChange();
+            OneShot = false;
         }
+    }
+
+    public void InitKeyWord()
+    {
+        originalText = "제대로 안그리면 죽여버리겠습니다!\r\n\r\n키워드 : "+GameManager.Instance.keyWord;
+        KeyWordChange(originalText);
     }
 
     public void KeyWordChange(string message)
@@ -47,7 +56,8 @@ public class ChatUI : MonoBehaviour
     private void CheckAnswer()
     {
         // 특정 단어가 텍스트에 포함되어 있는지 확인
-        if (Regex.IsMatch(LLMAPIManager.Instance.apiResponse, $@"(^|[^가-힣]){Regex.Escape(GameManager.Instance.keyWord)}([^가-힣]|$)"))
+        //if (Regex.IsMatch(LLMAPIManager.Instance.apiResponse, $@"(^|[^가-힣]){Regex.Escape(GameManager.Instance.keyWord)}([^가-힣]|$)"))
+        if (Regex.IsMatch(LLMAPIManager.Instance.apiResponse, GameManager.Instance.keyWord))
         {
             // 단어를 리치 텍스트 태그로 감쌈
             /*string coloredText = Regex.Replace(
@@ -61,7 +71,8 @@ public class ChatUI : MonoBehaviour
         else
         {
             // 키워드가 없는 경우 다른 기능 수행
-            isCorrect = false;
+            isIncorrect = true;
+            GameManager.Instance.StartAction();
         }
     }
 
@@ -75,7 +86,7 @@ public class ChatUI : MonoBehaviour
             {
                 GameManager.Instance.clearFlag = true;
             }
-            else
+            else if (isIncorrect)
             {
                 GameManager.Instance.failFlag = true;
             }

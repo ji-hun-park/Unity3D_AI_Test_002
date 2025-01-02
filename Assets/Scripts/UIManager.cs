@@ -115,7 +115,7 @@ public class UIManager : MonoBehaviour
     {
         popupMessage = PM;
         UIList[4].gameObject.SetActive(true);
-        yield return new WaitForSecondsRealtime(1.5f); // Time.timeScale과 상관없이 2초 대기
+        yield return new WaitForSecondsRealtime(1f); // Time.timeScale과 상관없이 n초 대기
         UIList[4].gameObject.SetActive(false);
     }
 }

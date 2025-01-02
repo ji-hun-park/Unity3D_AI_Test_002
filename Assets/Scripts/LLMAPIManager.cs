@@ -117,8 +117,9 @@ public class LLMAPIManager : MonoBehaviour
         if (modelResponse != null)
         {
             Debug.Log("Model Response: " + modelResponse);
-            isCatch = true;
             apiResponse = modelResponse;
+            isCatch = true;
+            UIManager.Instance.UIList[0].GetComponent<ChatUI>().OneShot = true;
         }
         else
         {

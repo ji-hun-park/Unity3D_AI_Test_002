@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
     
     [Header("GameSettings")]
     public Transform player;
+
+    public GameObject NPC;
+    public Animator animator;
     public KeyCode interactKey;
 
     [SerializeField] private string KeyWord;
@@ -76,6 +79,10 @@ public class GameManager : MonoBehaviour
         }
         
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        NPC = GameObject.FindGameObjectWithTag("NPC");
+        
+        if (NPC != null) animator = NPC.GetComponent<Animator>();
+        
         interactKey = KeyCode.F;
         OnFlagTrue += HandleFlagTrue; // 이벤트 구독
         
@@ -93,7 +100,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameClear");
         Time.timeScale = 0;
-        //UIManager.Instance.UIList[4].gameObject.SetActive(true);    
+        UIManager.Instance.UIList[5].gameObject.SetActive(true);
+        UIManager.Instance.UIList[5].GetComponent<OverUI>().overText.text = "Game Clear";
     }
 
     void OnDestroy()
@@ -115,10 +123,25 @@ public class GameManager : MonoBehaviour
         KeyWordList.Add("집");
     }
 
+    public void StartAction()
+    {
+        StartCoroutine(DelayedAction());
+    }
+    
+    private IEnumerator DelayedAction()
+    {
+        animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+        animator.SetTrigger("Melee Set");
+        yield return new WaitForSecondsRealtime(3f);
+        animator.ResetTrigger("Melee Set");
+        animator.Play("Idle"); // Idle 상태로 전환
+    }
+
     public void GameOver()
     {
         Debug.Log("GameOver");
         Time.timeScale = 0;
-        //UIManager.Instance.UIList[4].gameObject.SetActive(true);
+        UIManager.Instance.UIList[5].gameObject.SetActive(true);
+        UIManager.Instance.UIList[5].GetComponent<OverUI>().overText.text = "Game Over!";
     }
 }

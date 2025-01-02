@@ -16,23 +16,7 @@ public class ScreenManager : MonoBehaviour
 
     void Start()
     {
-        // 브러쉬 색 초기화
-        drawColor = Color.black;
-        
-        // 새 텍스처 생성
-        drawTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
-        for (int x = 0; x < textureWidth; x++)
-        {
-            for (int y = 0; y < textureHeight; y++)
-            {
-                drawTexture.SetPixel(x, y, Color.white); // 초기화
-            }
-        }
-        drawTexture.Apply();
-
-        // 텍스처를 RawImage에 연결
-        targetImage.texture = drawTexture;
-        rectTransform = targetImage.GetComponent<RectTransform>();
+        InitCanvas();
     }
 
     void Update()
@@ -52,13 +36,40 @@ public class ScreenManager : MonoBehaviour
             }
         }
 
-        // 저장 단축키 감지 (예: S키)
+        // 저장 단축키 감지
         if (Input.GetKeyDown(KeyCode.S))
         {
             SaveTexture();
         }
+        
+        // 불러오기 단축키 감지
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            LoadTexture();
+        }
     }
 
+    public void InitCanvas()
+    {
+        // 브러쉬 색 초기화
+        drawColor = Color.black;
+        
+        // 새 텍스처 생성
+        drawTexture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, false);
+        for (int x = 0; x < textureWidth; x++)
+        {
+            for (int y = 0; y < textureHeight; y++)
+            {
+                drawTexture.SetPixel(x, y, Color.white); // 초기화
+            }
+        }
+        drawTexture.Apply();
+
+        // 텍스처를 RawImage에 연결
+        targetImage.texture = drawTexture;
+        rectTransform = targetImage.GetComponent<RectTransform>();
+    }
+    
     void DrawAt(int x, int y)
     {
         // 브러시 영역에 색상 적용
