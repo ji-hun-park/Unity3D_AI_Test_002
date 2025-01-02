@@ -131,10 +131,24 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
+    public void OnClickSendButton()
+    {
+        string filePath = Path.Combine(Application.persistentDataPath, "SavedDrawing.png");
+
+        if (File.Exists(filePath))
+        {
+            LLMAPIManager.Instance.SendRequest();
+        }
+        else
+        {
+            Debug.LogWarning("저장된 그림이 없습니다!");
+        }
+    }
+
     private IEnumerator PopupAlertMessage()
     {
         UIManager.Instance.UIList[4].gameObject.SetActive(true);
-        yield return new WaitForSecondsRealtime(2f); // Time.timeScale과 상관없이 2초 대기
+        yield return new WaitForSecondsRealtime(1.5f); // Time.timeScale과 상관없이 2초 대기
         UIManager.Instance.UIList[4].gameObject.SetActive(false);
     }
 }

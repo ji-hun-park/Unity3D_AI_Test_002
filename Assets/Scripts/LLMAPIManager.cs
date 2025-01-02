@@ -16,11 +16,11 @@ public class LLMAPIManager : MonoBehaviour
     
     public string promptMessage = null;
     public string apiResponse = null;
-    public List<string> messageList = new List<string>();
     public bool isCatch;
     private int maxToken;
     private string apiUrl = null;
     private string apiKey = null;
+    private string base64Image;
     
     [Serializable]
     private class ApiKeyData
@@ -54,16 +54,32 @@ public class LLMAPIManager : MonoBehaviour
         apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;   
     }
 
-    public void SendRequest(string query)
+    public void SendRequest()
     {
-        //promptMessage = "키워드와 질문이 주어질거야 질문에 대해 키워드에 관해 설명해! 키워드 직접 언급 금지! 키워드 : " + GameManager.Instance.answerItem + ", 질문 : " + query;
+        promptMessage = "인라인데이타로 주어진 이미지를 보고 설명해!";
         StartCoroutine(LLMAPIRequest(promptMessage, maxToken));
     }
-    
+
+    private void ImagetoInlineData()
+    {
+        // 파일 경로 설정
+        string filePath = Path.Combine(Application.persistentDataPath, "SavedDrawing.png");
+
+        if (File.Exists(filePath))
+        {
+            // 저장된 파일 읽기
+            byte[] pngData = File.ReadAllBytes(filePath);
+            base64Image = Convert.ToBase64String(pngData); // Base64로 인코딩
+        }
+    }
+
     private IEnumerator LLMAPIRequest(string prompt, int maxTokens)
     {
+        // 이미지를 InlineData로 만들기
+        ImagetoInlineData();
+        
         // POST로 보내기 위해 JSON 형식 데이터로 만듬
-        string jsonData = "{\"contents\":[{\"parts\":[{\"text\":\"" + prompt + "\"}]}], \"generationConfig\": {\"maxOutputTokens\": " + maxTokens + "}}";
+        string jsonData = "{\"contents\":[{\"parts\":[{\"text\":\"" + prompt + "\"},{\"inlineData\": {\"mimeType\": \"image/png\",\"data\": \"" + base64Image + "\"}}]}], \"generationConfig\": {\"maxOutputTokens\": " + maxTokens + "}}";
 
         // UnityWebRequest 보내기 위해 필요한 것 들
         UnityWebRequest request = new UnityWebRequest(apiUrl, "POST");
@@ -102,9 +118,7 @@ public class LLMAPIManager : MonoBehaviour
         {
             Debug.Log("Model Response: " + modelResponse);
             isCatch = true;
-            messageList.Add(modelResponse);
             apiResponse = modelResponse;
-            //UIManager.Instance.npcUI.RefreshText();
         }
         else
         {

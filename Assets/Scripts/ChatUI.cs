@@ -8,7 +8,7 @@ public class ChatUI : MonoBehaviour
     //public TMP_Text chatText;
     public TextMeshProUGUI chatText;
     public UnityEvent onSkipKeyPressed;
-    string colorHex = ColorUtility.ToHtmlStringRGB(Color.red);
+    public string colorHex = ColorUtility.ToHtmlStringRGB(Color.red);
     
     private void Start()
     {
@@ -21,6 +21,11 @@ public class ChatUI : MonoBehaviour
         {
             onSkipKeyPressed?.Invoke();
         }
+
+        if (LLMAPIManager.Instance.isCatch)
+        {
+            AnswerChange();
+        }
     }
 
     public void KeyWordChange()
@@ -28,6 +33,11 @@ public class ChatUI : MonoBehaviour
         string originalText = "제대로 안그리면 죽여버리겠습니다!\r\n\r\n키워드 : "+GameManager.Instance.keyWord;
         string coloredText = originalText.Replace(GameManager.Instance.keyWord, $"<color=#{colorHex}>{GameManager.Instance.keyWord}</color>");
         chatText.text = coloredText;
+    }
+
+    private void AnswerChange()
+    {
+        chatText.text = LLMAPIManager.Instance.apiResponse;
     }
 
     public void OnClickCloseButton()
