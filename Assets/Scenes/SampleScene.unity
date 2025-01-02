@@ -7871,6 +7871,10 @@ MonoBehaviour:
   lineButton: {fileID: 1284847895}
   rectButton: {fileID: 615616233}
   circleButton: {fileID: 944257786}
+  BrushButton: {fileID: 1584801546}
+  pencilButton: {fileID: 1003414774}
+  penButton: {fileID: 1299126229}
+  crayonButton: {fileID: 873012265}
 --- !u!1 &1830666107
 GameObject:
   m_ObjectHideFlags: 0

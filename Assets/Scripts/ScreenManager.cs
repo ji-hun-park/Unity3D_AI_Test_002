@@ -5,6 +5,7 @@ using System.Collections;
 
 public class ScreenManager : MonoBehaviour
 {
+    public enum BrushType { Brush, Pencil, Pen, Crayon }
     public enum DrawMode { Brush, Line, Rectangle, Circle }
     
     public RawImage targetImage; // 그림을 그릴 UI Image (RawImage 사용 권장)
@@ -23,9 +24,17 @@ public class ScreenManager : MonoBehaviour
     public Button lineButton;
     public Button rectButton;
     public Button circleButton;
+    public Button BrushButton;
+    public Button pencilButton;
+    public Button penButton;
+    public Button crayonButton;
     
-    private Texture2D drawTexture;
+    private Texture2D drawTexture;  // 기본 질감
+    private Texture2D pencilTexture; // 연필 질감
+    private Texture2D penTexture;   // 만년필 질감
+    private Texture2D crayonTexture; // 크레파스 질감
     private RectTransform rectTransform;
+    private BrushType currentBrush = BrushType.Brush;
     private DrawMode currentMode = DrawMode.Brush;
 
     private Vector2 startPoint; // 시작 점
@@ -137,6 +146,10 @@ public class ScreenManager : MonoBehaviour
         if (lineButton != null) lineButton.onClick.AddListener(() => SetDrawMode(DrawMode.Line));
         if (rectButton != null) rectButton.onClick.AddListener(() => SetDrawMode(DrawMode.Rectangle));
         if (circleButton != null) circleButton.onClick.AddListener(() => SetDrawMode(DrawMode.Circle));
+        if (BrushButton != null) BrushButton.onClick.AddListener(() => SetBrushType(BrushType.Brush));
+        if (pencilButton != null) pencilButton.onClick.AddListener(() => SetBrushType(BrushType.Pencil));
+        if (penButton != null) penButton.onClick.AddListener(() => SetBrushType(BrushType.Pen));
+        if (crayonButton != null) crayonButton.onClick.AddListener(() => SetBrushType(BrushType.Crayon));
         
         // 슬라이더 이벤트 연결
         if (brushSizeSlider != null)
@@ -146,6 +159,8 @@ public class ScreenManager : MonoBehaviour
             brushSizeSlider.value = brushSize;
             brushSizeSlider.onValueChanged.AddListener(ChangeBrushSize);
         }
+        
+        LoadBrushTextures();
     }
     
     void DrawAt(int x, int y)
@@ -174,6 +189,8 @@ public class ScreenManager : MonoBehaviour
     
     void DrawBrush(int x, int y)
     {
+        Texture2D currentTexture = GetCurrentBrushTexture();
+
         for (int i = -Mathf.FloorToInt(brushSize); i < Mathf.CeilToInt(brushSize); i++)
         {
             for (int j = -Mathf.FloorToInt(brushSize); j < Mathf.CeilToInt(brushSize); j++)
@@ -186,12 +203,48 @@ public class ScreenManager : MonoBehaviour
                     float distance = Vector2.Distance(new Vector2(x, y), new Vector2(px, py));
                     if (distance <= brushSize)
                     {
-                        drawTexture.SetPixel(px, py, drawColor);
+                        // 브러쉬 질감 적용
+                        float alpha = currentTexture.GetPixelBilinear((float)(i + brushSize) / (brushSize * 2),
+                                                                      (float)(j + brushSize) / (brushSize * 2)).a;
+                        Color currentColor = drawTexture.GetPixel(px, py);
+                        Color blendedColor = Color.Lerp(currentColor, drawColor, alpha);
+                        drawTexture.SetPixel(px, py, blendedColor);
                     }
                 }
             }
         }
         drawTexture.Apply();
+    }
+
+    Texture2D GetCurrentBrushTexture()
+    {
+        switch (currentBrush)
+        {
+            case BrushType.Brush: return drawTexture;
+            case BrushType.Pencil: return pencilTexture;
+            case BrushType.Pen: return penTexture;
+            case BrushType.Crayon: return crayonTexture;
+            default: return drawTexture;
+        }
+    }
+
+    void SetBrushType(BrushType brushType)
+    {
+        currentBrush = brushType;
+        Debug.Log($"브러쉬 변경: {brushType}");
+    }
+
+    void LoadBrushTextures()
+    {
+        // 각 브러쉬 질감 로드 (Unity Editor의 Resources 폴더에 미리 저장된 텍스처)
+        pencilTexture = Resources.Load<Texture2D>("BrushTextures/Pencil");
+        penTexture = Resources.Load<Texture2D>("BrushTextures/Pen");
+        crayonTexture = Resources.Load<Texture2D>("BrushTextures/Crayon");
+
+        if (!pencilTexture || !penTexture || !crayonTexture)
+        {
+            Debug.LogError("브러쉬 질감 로드 실패: Resources/BrushTextures 폴더에 텍스처를 추가하세요.");
+        }
     }
 
     void DrawLine(Vector2 start, Vector2 end)
