@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -103,5 +104,18 @@ public class UIManager : MonoBehaviour
             }
         }
         return null; // 찾지 못했을 경우 null 반환
+    }
+
+    public void RunPopupCoroutine(string MT)
+    {
+        StartCoroutine(PopupAlertMessage(MT));
+    }
+    
+    private IEnumerator PopupAlertMessage(string PM)
+    {
+        popupMessage = PM;
+        UIList[4].gameObject.SetActive(true);
+        yield return new WaitForSecondsRealtime(1.5f); // Time.timeScale과 상관없이 2초 대기
+        UIList[4].gameObject.SetActive(false);
     }
 }

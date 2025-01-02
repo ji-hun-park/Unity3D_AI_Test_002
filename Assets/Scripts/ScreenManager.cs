@@ -96,7 +96,7 @@ public class ScreenManager : MonoBehaviour
             File.WriteAllBytes(filePath, pngData);
             
             // 저장 알림 메시지 띄우기
-            StartCoroutine(PopupAlertMessage("그림이 저장되었습니다!"));
+            UIManager.Instance.RunPopupCoroutine("그림이 저장되었습니다!");
             
             // 저장 완료 로그
             Debug.Log($"그림이 저장되었습니다: {filePath}");
@@ -138,20 +138,22 @@ public class ScreenManager : MonoBehaviour
         if (File.Exists(filePath))
         {
             LLMAPIManager.Instance.SendRequest();
-            StartCoroutine(PopupAlertMessage("그림이 전송됐습니다!"));
+            UIManager.Instance.RunPopupCoroutine("그림이 전송됐습니다!");
         }
         else
         {
             Debug.LogWarning("저장된 그림이 없습니다!");
-            StartCoroutine(PopupAlertMessage("저장된 그림이 없습니다!"));
+            UIManager.Instance.RunPopupCoroutine("저장된 그림이 없습니다!");
         }
     }
 
-    private IEnumerator PopupAlertMessage(string PM)
+    public void OnClickLoadButton()
     {
-        UIManager.Instance.popupMessage = PM;
-        UIManager.Instance.UIList[4].gameObject.SetActive(true);
-        yield return new WaitForSecondsRealtime(1.5f); // Time.timeScale과 상관없이 2초 대기
-        UIManager.Instance.UIList[4].gameObject.SetActive(false);
+        //
+    }
+
+    public void OnClickReturnButton()
+    {
+        gameObject.SetActive(false);
     }
 }
