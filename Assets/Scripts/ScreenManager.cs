@@ -33,6 +33,8 @@ public class ScreenManager : MonoBehaviour
     private Texture2D pencilTexture; // 연필 질감
     private Texture2D penTexture;   // 만년필 질감
     private Texture2D crayonTexture; // 크레파스 질감
+    private Texture2D tmpT2D;
+    private Sprite iconSprite;
     private RectTransform rectTransform;
     private BrushType currentBrush = BrushType.Brush;
     private DrawMode currentMode = DrawMode.Brush;
@@ -160,6 +162,21 @@ public class ScreenManager : MonoBehaviour
             brushSizeSlider.onValueChanged.AddListener(ChangeBrushSize);
         }
         
+        // 아이콘 세팅
+        tmpT2D = Resources.Load<Texture2D>("Icons/Brush");
+        iconSprite = Sprite.Create(tmpT2D, new Rect(0, 0, tmpT2D.width, tmpT2D.height), new Vector2(0.5f, 0.5f));
+        if (BrushButton != null) BrushButton.gameObject.GetComponent<Image>().sprite = iconSprite;
+        tmpT2D = Resources.Load<Texture2D>("Icons/Pencil");
+        iconSprite = Sprite.Create(tmpT2D, new Rect(0, 0, tmpT2D.width, tmpT2D.height), new Vector2(0.5f, 0.5f));
+        if (pencilButton != null) pencilButton.gameObject.GetComponent<Image>().sprite = iconSprite;
+        tmpT2D = Resources.Load<Texture2D>("Icons/Pen");
+        iconSprite = Sprite.Create(tmpT2D, new Rect(0, 0, tmpT2D.width, tmpT2D.height), new Vector2(0.5f, 0.5f));
+        if (penButton != null) penButton.gameObject.GetComponent<Image>().sprite = iconSprite;
+        tmpT2D = Resources.Load<Texture2D>("Icons/Crayon");
+        iconSprite = Sprite.Create(tmpT2D, new Rect(0, 0, tmpT2D.width, tmpT2D.height), new Vector2(0.5f, 0.5f));
+        if (crayonButton != null) crayonButton.gameObject.GetComponent<Image>().sprite = iconSprite;
+        
+        // 브러쉬 질감 텍스처들 가져오기
         LoadBrushTextures();
     }
     
