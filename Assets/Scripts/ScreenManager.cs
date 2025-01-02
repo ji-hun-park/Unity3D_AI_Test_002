@@ -5,6 +5,8 @@ using System.Collections;
 
 public class ScreenManager : MonoBehaviour
 {
+    public enum DrawMode { Brush, Line, Rectangle, Circle }
+    
     public RawImage targetImage; // 그림을 그릴 UI Image (RawImage 사용 권장)
     public int textureWidth = 512; // 캔버스 너비
     public int textureHeight = 512; // 캔버스 높이
@@ -17,9 +19,17 @@ public class ScreenManager : MonoBehaviour
     public Button blueButton;   // UI 버튼 (파란색)
     public Button greenButton;  // UI 버튼 (녹색)
     public Slider brushSizeSlider; // 브러시 크기 조절 슬라이더
+    public Button brushButton;
+    public Button lineButton;
+    public Button rectButton;
+    public Button circleButton;
     
     private Texture2D drawTexture;
     private RectTransform rectTransform;
+    private DrawMode currentMode = DrawMode.Brush;
+
+    private Vector2 startPoint; // 시작 점
+    private bool isDrawing = false;
 
     void Start()
     {
@@ -38,8 +48,40 @@ public class ScreenManager : MonoBehaviour
                 // UI Image 좌표를 텍스처 좌표로 변환
                 float x = (localPoint.x + rectTransform.rect.width / 2) / rectTransform.rect.width * textureWidth;
                 float y = (localPoint.y + rectTransform.rect.height / 2) / rectTransform.rect.height * textureHeight;
+                startPoint = new Vector2(x, y);
+                isDrawing = true;
+                
+                if (currentMode == DrawMode.Brush)
+                {
+                    DrawBrush((int)x, (int)y);
+                }
+            }
+            else if (Input.GetMouseButton(0) && isDrawing && currentMode == DrawMode.Brush)
+            {
+                //Vector2 localPoint;
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint))
+                {
+                    float x = (localPoint.x + rectTransform.rect.width / 2) / rectTransform.rect.width * textureWidth;
+                    float y = (localPoint.y + rectTransform.rect.height / 2) / rectTransform.rect.height * textureHeight;
+                    DrawBrush((int)x, (int)y);
+                }
+            }
+            else if (Input.GetMouseButtonUp(0) && isDrawing)
+            {
+                //Vector2 localPoint;
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint))
+                {
+                    float x = (localPoint.x + rectTransform.rect.width / 2) / rectTransform.rect.width * textureWidth;
+                    float y = (localPoint.y + rectTransform.rect.height / 2) / rectTransform.rect.height * textureHeight;
 
-                DrawAt((int)x, (int)y); // 텍스처에 그리기
+                    Vector2 endPoint = new Vector2(x, y);
+
+                    if (currentMode == DrawMode.Line) DrawLine(startPoint, endPoint);
+                    else if (currentMode == DrawMode.Rectangle) DrawRectangle(startPoint, endPoint);
+                    else if (currentMode == DrawMode.Circle) DrawCircle(startPoint, endPoint);
+
+                    isDrawing = false;
+                }
             }
         }
 
@@ -82,7 +124,11 @@ public class ScreenManager : MonoBehaviour
         if (redButton != null) redButton.onClick.AddListener(() => ChangeColor(Color.red));
         if (blueButton != null) blueButton.onClick.AddListener(() => ChangeColor(Color.blue));
         if (greenButton != null) greenButton.onClick.AddListener(() => ChangeColor(Color.green));
-
+        if (brushButton != null) brushButton.onClick.AddListener(() => SetDrawMode(DrawMode.Brush));
+        if (lineButton != null) lineButton.onClick.AddListener(() => SetDrawMode(DrawMode.Line));
+        if (rectButton != null) rectButton.onClick.AddListener(() => SetDrawMode(DrawMode.Rectangle));
+        if (circleButton != null) circleButton.onClick.AddListener(() => SetDrawMode(DrawMode.Circle));
+        
         // 슬라이더 이벤트 연결
         if (brushSizeSlider != null)
         {
@@ -115,6 +161,102 @@ public class ScreenManager : MonoBehaviour
             }
         }
         drawTexture.Apply(); // 변경 사항 적용
+    }
+    
+    void DrawBrush(int x, int y)
+    {
+        for (int i = -Mathf.FloorToInt(brushSize); i < Mathf.CeilToInt(brushSize); i++)
+        {
+            for (int j = -Mathf.FloorToInt(brushSize); j < Mathf.CeilToInt(brushSize); j++)
+            {
+                int px = x + i;
+                int py = y + j;
+
+                if (px >= 0 && px < textureWidth && py >= 0 && py < textureHeight)
+                {
+                    float distance = Vector2.Distance(new Vector2(x, y), new Vector2(px, py));
+                    if (distance <= brushSize)
+                    {
+                        drawTexture.SetPixel(px, py, drawColor);
+                    }
+                }
+            }
+        }
+        drawTexture.Apply();
+    }
+
+    void DrawLine(Vector2 start, Vector2 end)
+    {
+        int x0 = (int)start.x;
+        int y0 = (int)start.y;
+        int x1 = (int)end.x;
+        int y1 = (int)end.y;
+
+        int dx = Mathf.Abs(x1 - x0);
+        int dy = Mathf.Abs(y1 - y0);
+        int sx = x0 < x1 ? 1 : -1;
+        int sy = y0 < y1 ? 1 : -1;
+        int err = dx - dy;
+
+        while (true)
+        {
+            drawTexture.SetPixel(x0, y0, drawColor);
+
+            if (x0 == x1 && y0 == y1) break;
+
+            int e2 = err * 2;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+        drawTexture.Apply();
+    }
+
+    void DrawRectangle(Vector2 start, Vector2 end)
+    {
+        for (int x = (int)start.x; x <= (int)end.x; x++)
+        {
+            drawTexture.SetPixel(x, (int)start.y, drawColor);
+            drawTexture.SetPixel(x, (int)end.y, drawColor);
+        }
+
+        for (int y = (int)start.y; y <= (int)end.y; y++)
+        {
+            drawTexture.SetPixel((int)start.x, y, drawColor);
+            drawTexture.SetPixel((int)end.x, y, drawColor);
+        }
+        drawTexture.Apply();
+    }
+
+    void DrawCircle(Vector2 start, Vector2 end)
+    {
+        float radius = Vector2.Distance(start, end) / 2;
+        Vector2 center = (start + end) / 2;
+
+        for (int x = 0; x < textureWidth; x++)
+        {
+            for (int y = 0; y < textureHeight; y++)
+            {
+                if (Vector2.Distance(new Vector2(x, y), center) <= radius)
+                {
+                    drawTexture.SetPixel(x, y, drawColor);
+                }
+            }
+        }
+        drawTexture.Apply();
+    }
+
+    void SetDrawMode(DrawMode mode)
+    {
+        currentMode = mode;
+        Debug.Log($"모드 변경: {mode}");
     }
 
     void SaveTexture()
