@@ -122,12 +122,14 @@ public class ScreenManager : MonoBehaviour
             {
                 drawTexture.LoadImage(pngData);
                 drawTexture.Apply();
+                UIManager.Instance.RunPopupCoroutine("그림이 성공적으로 불러와졌습니다.");
                 Debug.Log("그림이 성공적으로 불러와졌습니다.");
             }
         }
         else
         {
             Debug.LogWarning($"저장된 그림이 없습니다: {filePath}");
+            UIManager.Instance.RunPopupCoroutine("저장된 그림이 없습니다!");
         }
     }
 
@@ -149,7 +151,7 @@ public class ScreenManager : MonoBehaviour
 
     public void OnClickLoadButton()
     {
-        //
+        LoadTexture();
     }
 
     public void OnClickReturnButton()
