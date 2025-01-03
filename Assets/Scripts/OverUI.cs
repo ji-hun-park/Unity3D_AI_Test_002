@@ -21,7 +21,7 @@ public class OverUI : MonoBehaviour
         UIManager.Instance.UIList[0].GetComponent<ChatUI>().isCorrect = false;
         UIManager.Instance.UIList[0].GetComponent<ChatUI>().isIncorrect = false;
         UIManager.Instance.UIList[0].GetComponent<ChatUI>().OneShot = true;
-        UIManager.Instance.UIList[3].GetComponent<ScreenManager>().InitCanvas();
+        UIManager.Instance.UIList[3].GetComponent<ScreenManager>().InitDrawPaper();
         gameObject.SetActive(false);
     }
     
